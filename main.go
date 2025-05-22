@@ -3,22 +3,29 @@ package main
 import (
 	"go-apotik-api/database"
 	route "go-apotik-api/routes"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Gagal load file .env:", err)
+	}
+
 	app := fiber.New()
 
-	// Tambahkan middleware CORS di sini
+	// Middleware CORS
 	app.Use(cors.New(cors.Config{
-	AllowOrigins:     "http://localhost:5174",
-	AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
-	AllowHeaders:     "*", // atau bisa sebutkan secara spesifik
-	AllowCredentials: true,
-}))
-
+		AllowOrigins:     "http://localhost:5173",
+		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+		AllowHeaders:     "*",
+		AllowCredentials: true,
+	}))
 
 	database.Connect()
 
