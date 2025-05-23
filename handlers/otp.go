@@ -32,7 +32,7 @@ func VerifyResetCode(c *fiber.Ctx) error {
 	err = database.DB.QueryRow("SELECT code FROM reset_codes WHERE id_user = ? AND code = ?", idUser, req.Code).Scan(&savedCode)
 	if err != nil {
 		fmt.Println("Kode tidak ditemukan atau belum diminta untuk user:", idUser, "code:", req.Code)
-		return c.Status(404).JSON(fiber.Map{"error": "Kode tidak ditemukan atau belum diminta"})
+		return c.Status(404).JSON(fiber.Map{"error": "Kode yang anda masukkan salah"})
 	}
 
 	// Tidak lagi memeriksa expired time

@@ -37,5 +37,6 @@ func main() {
 	route.EresepRoute(app)
 	route.DetailEresepRoute(app)
 
+	app.Static("/images", "./public/images")
 	app.Listen(":3000")
 }
