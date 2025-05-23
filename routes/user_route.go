@@ -14,5 +14,9 @@ func UserRoute(app *fiber.App) {
 	r.Put("/:id", handlers.UpdateUser)
 	r.Delete("/:id", handlers.DeleteUser)
 	r.Post("/send-reset-code", handlers.SendResetCode)
-	r.Post("/verify-reset-code", handlers.VerifyResetCode) // <-- PENTING: ini di dalam group /api/user
+	r.Post("/verify-reset-code", handlers.VerifyResetCode) 
+	r.Put("/:id/password", handlers.UpdatePassword)
+	r.Post("/login", handlers.LoginUser)
+
+
 }
