@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"go-apotik-api/database" // ganti utils jadi database supaya konsisten seperti dokter
+	"go-apotik-api/database"
 	"go-apotik-api/models"
 	"log"
 
@@ -9,7 +9,7 @@ import (
 )
 
 func GetAllPasien(c *fiber.Ctx) error {
-	rows, err := database.DB.Query("SELECT ID_PENDAFTARAN, UMUR, DIAGNOSA, BERAT_BADAN, FOTO_PASIEN FROM PASIEN")
+	rows, err := database.DB.Query("SELECT ID_PENDAFTARAN, NAMA_PASIEN, UMUR, DIAGNOSA, BERAT_BADAN, FOTO_PASIEN FROM PASIEN")
 	if err != nil {
 		log.Println("Error fetching pasien:", err)
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch pasien"})
@@ -19,7 +19,7 @@ func GetAllPasien(c *fiber.Ctx) error {
 	var pasienList []models.Pasien
 	for rows.Next() {
 		var p models.Pasien
-		if err := rows.Scan(&p.IDPendaftaran, &p.Umur, &p.Diagnosa, &p.BeratBadan, &p.FotoPasien); err != nil {
+		if err := rows.Scan(&p.IDPendaftaran, &p.NamaPasien, &p.Umur, &p.Diagnosa, &p.BeratBadan, &p.FotoPasien); err != nil {
 			log.Println("Error scanning pasien:", err)
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to read pasien data"})
 		}
@@ -33,8 +33,8 @@ func GetPasienByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var p models.Pasien
 
-	err := database.DB.QueryRow("SELECT ID_PENDAFTARAN, UMUR, DIAGNOSA, BERAT_BADAN, FOTO_PASIEN FROM PASIEN WHERE ID_PENDAFTARAN = ?", id).
-		Scan(&p.IDPendaftaran, &p.Umur, &p.Diagnosa, &p.BeratBadan, &p.FotoPasien)
+	err := database.DB.QueryRow("SELECT ID_PENDAFTARAN, NAMA_PASIEN, UMUR, DIAGNOSA, BERAT_BADAN, FOTO_PASIEN FROM PASIEN WHERE ID_PENDAFTARAN = ?", id).
+		Scan(&p.IDPendaftaran, &p.NamaPasien, &p.Umur, &p.Diagnosa, &p.BeratBadan, &p.FotoPasien)
 	if err != nil {
 		log.Println("Pasien tidak ditemukan:", err)
 		return c.Status(404).JSON(fiber.Map{"error": "Pasien not found"})
@@ -57,8 +57,8 @@ func CreatePasien(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "ID_PENDAFTARAN sudah ada"})
 	}
 
-	_, err = database.DB.Exec("INSERT INTO PASIEN (ID_PENDAFTARAN, UMUR, DIAGNOSA, BERAT_BADAN, FOTO_PASIEN) VALUES (?, ?, ?, ?, ?)",
-		p.IDPendaftaran, p.Umur, p.Diagnosa, p.BeratBadan, p.FotoPasien)
+	_, err = database.DB.Exec("INSERT INTO PASIEN (ID_PENDAFTARAN, NAMA_PASIEN, UMUR, DIAGNOSA, BERAT_BADAN, FOTO_PASIEN) VALUES (?, ?, ?, ?, ?, ?)",
+		p.IDPendaftaran, p.NamaPasien, p.Umur, p.Diagnosa, p.BeratBadan, p.FotoPasien)
 	if err != nil {
 		log.Println("Error inserting pasien:", err)
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to create pasien"})
@@ -80,8 +80,8 @@ func UpdatePasien(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "ID in URL and body must be the same"})
 	}
 
-	res, err := database.DB.Exec("UPDATE PASIEN SET UMUR=?, DIAGNOSA=?, BERAT_BADAN=?, FOTO_PASIEN=? WHERE ID_PENDAFTARAN=?",
-		p.Umur, p.Diagnosa, p.BeratBadan, p.FotoPasien, id)
+	res, err := database.DB.Exec("UPDATE PASIEN SET NAMA_PASIEN=?, UMUR=?, DIAGNOSA=?, BERAT_BADAN=?, FOTO_PASIEN=? WHERE ID_PENDAFTARAN=?",
+		p.NamaPasien, p.Umur, p.Diagnosa, p.BeratBadan, p.FotoPasien, id)
 	if err != nil {
 		log.Println("Error updating pasien:", err)
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to update pasien"})
@@ -110,5 +110,5 @@ func DeletePasien(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "Pasien not found"})
 	}
 
-	return c.SendStatus(204) // No Content, seperti dokter handler
+	return c.SendStatus(204) // No Content
 }

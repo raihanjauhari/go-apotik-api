@@ -36,6 +36,8 @@ func main() {
 	route.RegisterObatRoutes(app, database.DB)
 	route.EresepRoute(app)
 	route.DetailEresepRoute(app)
+	route.DilayaniRoute(app)
+	route.MemunculkanRoute(app)
 
 	app.Static("/images", "./public/images")
 	app.Listen(":3000")

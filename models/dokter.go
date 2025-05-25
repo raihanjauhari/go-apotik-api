@@ -1,8 +1,8 @@
 package models
 
 type Dokter struct {
-	ID         string `json:"id"`
-	Nama       string `json:"nama"`
+	IDDokter       string `json:"id_dokter"`
+	NamaDokter       string `json:"nama_dokter"`
 	Poli       string `json:"poli"`
 	FotoDokter string `json:"foto_dokter"`
 }

@@ -20,7 +20,7 @@ func GetAllDokter(c *fiber.Ctx) error {
 	var dokters []models.Dokter
 	for rows.Next() {
 		var d models.Dokter
-		if err := rows.Scan(&d.ID, &d.Nama, &d.Poli, &d.FotoDokter); err != nil {
+		if err := rows.Scan(&d.IDDokter, &d.NamaDokter, &d.Poli, &d.FotoDokter); err != nil {
 			log.Println("Error scanning dokter:", err)
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to read data"})
 		}
@@ -36,7 +36,7 @@ func GetDokterByID(c *fiber.Ctx) error {
 	var d models.Dokter
 
 	err := database.DB.QueryRow("SELECT ID_DOKTER, NAMA_DOKTER, POLI, FOTO_DOKTER FROM DOKTER WHERE ID_DOKTER = ?", id).
-		Scan(&d.ID, &d.Nama, &d.Poli, &d.FotoDokter)
+		Scan(&d.IDDokter, &d.NamaDokter, &d.Poli, &d.FotoDokter)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "Dokter not found"})
 	}
@@ -52,7 +52,7 @@ func CreateDokter(c *fiber.Ctx) error {
 	}
 
 	_, err := database.DB.Exec("INSERT INTO DOKTER (ID_DOKTER, NAMA_DOKTER, POLI, FOTO_DOKTER) VALUES (?, ?, ?, ?)",
-		d.ID, d.Nama, d.Poli, d.FotoDokter)
+		d.IDDokter, d.NamaDokter, d.Poli, d.FotoDokter)
 	if err != nil {
 		log.Println("Error inserting dokter:", err)
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to create dokter"})
@@ -70,7 +70,7 @@ func UpdateDokter(c *fiber.Ctx) error {
 	}
 
 	res, err := database.DB.Exec("UPDATE DOKTER SET NAMA_DOKTER=?, POLI=?, FOTO_DOKTER=? WHERE ID_DOKTER=?",
-		d.Nama, d.Poli, d.FotoDokter, id)
+		d.NamaDokter, d.Poli, d.FotoDokter, id)
 	if err != nil {
 		log.Println("Error updating dokter:", err)
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to update dokter"})
@@ -81,7 +81,7 @@ func UpdateDokter(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "Dokter not found"})
 	}
 
-	d.ID = id
+	d.IDDokter = id
 	return c.JSON(d)
 }
 
